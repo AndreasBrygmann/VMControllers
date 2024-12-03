@@ -99,7 +99,7 @@ def main():
         checkServers()
 
     elif selection == "8":
-        uvicorn.run("main:app", port=8000, log_level="info")
+        uvicorn.run("main:app", port=4000, log_level="info")
 
     elif selection == "9":
         quit()
