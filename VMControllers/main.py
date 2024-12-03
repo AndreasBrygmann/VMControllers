@@ -10,6 +10,7 @@ from fastapi import FastAPI
 #from fastapi.templating import Jinja2Templates
 app = FastAPI()
 #templates = Jinja2Templates(directory="templates/")
+import uvicorn
 
 #count = pc.PlayerCount("Counter Strike: Source")
 #count = pc.PlayerCount("Portal")
@@ -75,6 +76,7 @@ def main():
     print("Press 1 to run auto adjust")
     print("Press 2 to check a games player count")
     print("Press 3 to check servers")
+    print("Press 8 for metrics")
     print("Press 9 to exit")
     print("**********************************************************\n")
     selection = input("input a number: ")
@@ -94,10 +96,14 @@ def main():
     elif selection == "3":
         checkServers()
 
+    elif selection == "8":
+        uvicorn.run("main:app", port=8000, log_level="info")
+
     elif selection == "9":
         quit()
     else:
         print("Invalid input")
         main()
+        
 if __name__ == "__main__":
     main()
