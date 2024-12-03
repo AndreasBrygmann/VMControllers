@@ -6,15 +6,21 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__))) #Copied from the 
 import serverController as sc
 import playerCount as pc
 from time import sleep
+from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
+app = FastAPI()
+templates = Jinja2Templates(directory="templates/")
 
 #count = pc.PlayerCount("Counter Strike: Source")
 #count = pc.PlayerCount("Portal")
 
 #playersPerServer = 500
 
+active, suspended = sc.checkServers()
+game = "Videogame"
+
 def adjustServers(game, playersPerServer):
     count = pc.PlayerCount(game)
-    active, suspended = sc.checkServers()
     servercount = count // playersPerServer
     if servercount == 0: servercount = 1
     print("Calculated servercount", servercount)
@@ -35,7 +41,6 @@ def checkPLayerCount(game):
     return count
 
 def checkServers():
-    active, suspended = sc.checkServers()
     print(active, "active servers")
     print(suspended, "suspended servers")
 
@@ -44,6 +49,21 @@ def runAutoAdjust(count, playersPerServer):
     while run:
         adjustServers(count, playersPerServer)
         sleep(300)
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World "}
+
+@app.get("/metrics")
+def displayActiveVMs(request: Request):
+    activeString = 'active_vm_count' \
+          '{appid="10",title="Counter Strike",type="game",releasedate="2000-11-01 00:00:00",freetoplay="0",developer="Valve",publisher="Valve",category="top_1000"} ' \
+            + str(active)
+    suspendedString = 'suspended_vm_count' \
+          '{appid="10",title="Counter Strike",type="game",releasedate="2000-11-01 00:00:00",freetoplay="0",developer="Valve",publisher="Valve",category="top_1000"} ' \
+            + str(suspended)
+    
+    return templates.TemplateResponse('metrics.html', context={'active': activeString, 'suspended': suspendedString})
 
 def main():
     print("**********************************************************")
