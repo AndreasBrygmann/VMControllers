@@ -11,6 +11,7 @@ from fastapi import FastAPI
 app = FastAPI()
 #templates = Jinja2Templates(directory="templates/")
 import uvicorn
+from fastapi.responses import HTMLResponse
 
 #count = pc.PlayerCount("Counter Strike: Source")
 #count = pc.PlayerCount("Portal")
@@ -64,11 +65,12 @@ def read_root():
     
     return templates.TemplateResponse('metrics.html', context={'active': activeString, 'suspended': suspendedString}) """
 
-@app.get("/metrics")
+@app.get("/metrics", response_class=HTMLResponse)
 def displayActiveVMs():
-    #template = f"<html><head><title>Is this Showing?</title></head><body><p>{active}</p></body></html>"
     activeVMString = 'server_count{title="Active Virtual Machines", totalvms="9"} ' + str(active)
-    return activeVMString
+    template = f"<html><head><title>Is this Showing?</title></head><body><p>{activeVMString}</p></body></html>"
+    
+    return HTMLResponse(content=template, status_code=200)
 
 def main():
     print("**********************************************************")
@@ -104,6 +106,6 @@ def main():
     else:
         print("Invalid input")
         main()
-        
+
 if __name__ == "__main__":
     main()
