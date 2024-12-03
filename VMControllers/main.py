@@ -70,7 +70,7 @@ def displayActiveVMs():
     activeVMString = 'server_count{title="Active Virtual Machines", totalvms="9"} ' + str(active)
     template = f"<html><head><title>Is this Showing?</title></head><body><p>{activeVMString}</p></body></html>"
     
-    return HTMLResponse(content=template, status_code=200)
+    return HTMLResponse(content=activeVMString, status_code=200)
 
 def main():
     print("**********************************************************")
