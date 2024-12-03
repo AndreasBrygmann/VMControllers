@@ -1,27 +1,25 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__))) #Copied from the Games code from
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__))) #Sets a fixed install path
 
 import serverController as sc
 import playerCount as pc
 from time import sleep
 from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
+#from fastapi.templating import Jinja2Templates
 app = FastAPI()
-templates = Jinja2Templates(directory="templates/")
+#templates = Jinja2Templates(directory="templates/")
 
 #count = pc.PlayerCount("Counter Strike: Source")
 #count = pc.PlayerCount("Portal")
 
-#playersPerServer = 500
-
 active, suspended = sc.checkServers()
 game = "Videogame"
 
-def adjustServers(game, playersPerServer):
+def adjustServers(game, playersPerServer, strategy):
     count = pc.PlayerCount(game)
-    servercount = count // playersPerServer
+    servercount = (count // playersPerServer) + strategy
     if servercount == 0: servercount = 1
     print("Calculated servercount", servercount)
     n = servercount - active
@@ -44,18 +42,18 @@ def checkServers():
     print(active, "active servers")
     print(suspended, "suspended servers")
 
-def runAutoAdjust(count, playersPerServer):
+def runAutoAdjust(count, playersPerServer, strategy):
     run = True
     while run:
-        adjustServers(count, playersPerServer)
+        adjustServers(count, playersPerServer, strategy)
         sleep(300)
 
 @app.get("/")
 def read_root():
     return {"Hello": "World "}
 
-@app.get("/metrics")
-def displayActiveVMs(request: Request):
+
+""" def displayActiveVMs(request: Request):
     activeString = 'active_vm_count' \
           '{appid="10",title="Counter Strike",type="game",releasedate="2000-11-01 00:00:00",freetoplay="0",developer="Valve",publisher="Valve",category="top_1000"} ' \
             + str(active)
@@ -63,7 +61,13 @@ def displayActiveVMs(request: Request):
           '{appid="10",title="Counter Strike",type="game",releasedate="2000-11-01 00:00:00",freetoplay="0",developer="Valve",publisher="Valve",category="top_1000"} ' \
             + str(suspended)
     
-    return templates.TemplateResponse('metrics.html', context={'active': activeString, 'suspended': suspendedString})
+    return templates.TemplateResponse('metrics.html', context={'active': activeString, 'suspended': suspendedString}) """
+
+@app.get("/metrics")
+def displayActiveVMs():
+    #template = f"<html><head><title>Is this Showing?</title></head><body><p>{active}</p></body></html>"
+    activeVMString = 'server_count{title="Active Virtual Machines", totalvms="9"} ' + str(active)
+    return activeVMString
 
 def main():
     print("**********************************************************")
@@ -78,7 +82,9 @@ def main():
     if selection == "1":
         game = input("Select game: ")
         playersPerServer = int(input("select how many players per server: "))
-        runAutoAdjust(game, playersPerServer)
+        print('Select scaling strategy:\nPress "0" For Cost saving\nPress "1" For Balanced scaling\nPress "2" For Aggressive scaling')
+        strategy = int(input("Enter 0, 1 or 2..."))
+        runAutoAdjust(game, playersPerServer, strategy)
 
     elif selection == "2":
         game = input("Select game: ")
