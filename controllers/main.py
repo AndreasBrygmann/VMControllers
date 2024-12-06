@@ -7,9 +7,7 @@ import serverController as sc
 import playerCount as pc
 from time import sleep
 from fastapi import FastAPI
-#from fastapi.templating import Jinja2Templates
 app = FastAPI()
-#templates = Jinja2Templates(directory="templates/")
 import uvicorn
 from fastapi.responses import PlainTextResponse
 
@@ -17,12 +15,13 @@ from fastapi.responses import PlainTextResponse
 #count = pc.PlayerCount("Portal")
 
 active, suspended = sc.checkServers()
-game = "Videogame"
+game = None
 
 def adjustServers(game, playersPerServer, strategy):
     count = pc.PlayerCount(game)
-    servercount = (count // playersPerServer) + strategy
-    if servercount == 0: servercount = 1
+    servercount = count // playersPerServer
+    if servercount < 1: servercount = 1
+    servercount += strategy
     print("Calculated servercount", servercount)
     n = servercount - active
     if servercount == active:
@@ -53,17 +52,6 @@ def runAutoAdjust(count, playersPerServer, strategy):
 @app.get("/")
 def read_root():
     return {"Hello": "World "}
-
-
-""" def displayActiveVMs(request: Request):
-    activeString = 'active_vm_count' \
-          '{appid="10",title="Counter Strike",type="game",releasedate="2000-11-01 00:00:00",freetoplay="0",developer="Valve",publisher="Valve",category="top_1000"} ' \
-            + str(active)
-    suspendedString = 'suspended_vm_count' \
-          '{appid="10",title="Counter Strike",type="game",releasedate="2000-11-01 00:00:00",freetoplay="0",developer="Valve",publisher="Valve",category="top_1000"} ' \
-            + str(suspended)
-    
-    return templates.TemplateResponse('metrics.html', context={'active': activeString, 'suspended': suspendedString}) """
 
 @app.get("/metrics", response_class=PlainTextResponse)
 def displayActiveVMs():
@@ -99,7 +87,8 @@ def main():
         checkServers()
 
     elif selection == "8":
-        uvicorn.run("main:app", port=4000, log_level="info")
+        port = int(input("Select a port: "))
+        uvicorn.run("main:app", port=port, log_level="info")
 
     elif selection == "9":
         quit()
