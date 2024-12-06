@@ -11,13 +11,15 @@ app = FastAPI()
 import uvicorn
 from fastapi.responses import PlainTextResponse
 
-#count = pc.PlayerCount("Counter Strike: Source")
-#count = pc.PlayerCount("Portal")
-
-active, suspended = sc.checkServers()
 game = None
 
+def getServerCount():
+    active, suspended = sc.checkServers()
+    return active, suspended
+
+
 def adjustServers(game, playersPerServer, strategy):
+    active, suspended = getServerCount()
     count = pc.PlayerCount(game)
     servercount = count // playersPerServer
     if servercount < 1: servercount = 1
@@ -40,6 +42,7 @@ def checkPLayerCount(game):
     return count
 
 def checkServers():
+    active, suspended = getServerCount()
     print(active, "active servers")
     print(suspended, "suspended servers")
 
@@ -55,6 +58,7 @@ def read_root():
 
 @app.get("/metrics", response_class=PlainTextResponse)
 def displayActiveVMs():
+    active, suspended = getServerCount()
     activeVMString = '# TYPE server_count gauge\n# HELP server_count "Number of active servers or VMs"\nserver_count{title="Active Virtual Machines", totalvms="9"} ' + str(active) + '\n'
     #template = f"<html><head><title>Is this Showing?</title></head><body><p>{activeVMString}</p></body></html>"
     
