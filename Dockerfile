@@ -11,7 +11,7 @@ COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 
-COPY ./VMControllers /code/VMControllers
+COPY ./controllers /code/controllers
 
 EXPOSE 4000
 

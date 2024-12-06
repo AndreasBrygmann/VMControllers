@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'vmcontroller=VMControllers.main:main', # Points directly to the main function in main.py
+            'vmcontroller=controllers.main:main', # Points directly to the main function in main.py
         ],
     },
 )
