@@ -16,5 +16,4 @@ COPY ./controllers /code/controllers
 EXPOSE 4000
 
 
-CMD ["VMControllers", "run", "app/main.py", "--port", "4000"]
-
+CMD ["vm_controllers", "run", "controllers/main.py", "--port", "4000"]
