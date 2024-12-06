@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./controllers /code/controllers
 
-EXPOSE 4000
+EXPOSE 80
 
 
-CMD ["vm_controllers", "run", "controllers/main.py", "--port", "4000"]
+CMD ["vm_controllers", "run", "controllers/main.py", "--port", "80"]
