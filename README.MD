@@ -4,7 +4,7 @@ This program is meant to simulate a server controll script
 ## Instructions:
 1. Copy the repo
 ```bash
-git clone https://github.com/AndreasBrygmann/VMControllers
+git clone https://github.com/AndreasBrygmann/vm_controllers
 ```
 
 2. install
