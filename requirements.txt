@@ -1,0 +1,7 @@
+python-novaclient
+keystoneauth1
+requests
+fastapi
+redis
+types-redis
+uvicorn
