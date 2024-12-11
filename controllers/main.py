@@ -36,7 +36,7 @@ def adjustServers(game, playersPerServer, strategy):
         print("\nCalculated servercount", servercount, "at", datetime.now().strftime('%H:%M'))
         n = servercount - active
         if servercount == active:
-            print("Servers are meeting demand")
+            return f"Servers are meeting demand"
         elif servercount < active:
             sc.suspendServers(n)
             print(f"Reduced active servers by {n}")
