@@ -15,8 +15,11 @@ def PlayerCount(game):
         # Use regex to remove everything before and including the last '}'
         result = [re.sub(r'.*} ', '', line) for line in lines]
 
-        count = int(result[0])
-
+        try:
+            count = int(result[0])
+        except:
+            print("Failed to fetch player count")
+            count = None
         # Print or return the result
         return count
     else:
